@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ghb.coltpath.Application;
-import com.ghb.coltpath.dto.RequestOutcomeMessage;
+import com.ghb.coltpath.dto.reader.UserGet;
+import com.ghb.coltpath.dto.writer.RequestOutcomeMessage;
+import com.ghb.coltpath.model.Role;
 import com.ghb.coltpath.model.User;
 import org.junit.After;
 import org.junit.Before;
@@ -39,21 +41,37 @@ public class UserResourceTest extends BaseIntegrationTest {
     }
 
     @Test
-    public void userLoginWithRightCredentials() {
+    public void userCanGetSelf() {
         User user = createUser();
         Date previousLoginDate = user.getLastLogin();
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
 
-        ResponseEntity<User> entity = new TestRestTemplate("awesome", "test").getForEntity("http://localhost:8888/users/awesome", User.class);
+        ResponseEntity<UserGet> entity = new TestRestTemplate("awesome", "test").getForEntity
+                ("http://localhost:8888/users/awesome", UserGet.class);
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         user = userRepository.findOne(user.getId());
         assertNotEquals(previousLoginDate, user.getLastLogin());
-        User retrieved = entity.getBody();
+
+        UserGet retrieved = entity.getBody();
+
         assertNotNull(retrieved);
         assertEquals(retrieved.getLogin(), "awesome");
+        assertEquals(retrieved.getEmail(), "test@example.com");
+        assertEquals(retrieved.getFirstName(), "John");
+        assertEquals(retrieved.getLastName(), "Doe");
+        assertTrue(retrieved.isActive());
         assertNotEquals(previousLoginDate, retrieved.getLastLogin());
+
+        Map<String, Object> resp = new TestRestTemplate("awesome", "test").getForObject
+                ("http://localhost:8888/users/awesome", Map.class);
+        assertTrue(resp.containsKey("_links"));
+
+        ResponseEntity<RequestOutcomeMessage> entity2 = new TestRestTemplate("awesome", "test").getForEntity
+                ("http://localhost:8888/users/otheruser", RequestOutcomeMessage.class);
+        assertEquals(HttpStatus.FORBIDDEN, entity2.getStatusCode());
+        assertEquals("Access is denied", entity2.getBody().getMessage());
     }
 
     @Test
@@ -92,7 +110,7 @@ public class UserResourceTest extends BaseIntegrationTest {
 
     @Test
     public void registerUserWithValidationPassing() throws JsonProcessingException {
-        createUser();
+        User currentUser = createUser();
         Map<String, Object> requestBody = new HashMap<String, Object>();
         requestBody.put("email", "test1@example.com");
         requestBody.put("firstName", "John");
@@ -115,6 +133,12 @@ public class UserResourceTest extends BaseIntegrationTest {
 
         String message = apiResponse.get("message").toString();
 
+        assertEquals("Access is denied", message);
+
+        addRole(currentUser, "ADMIN");
+        apiResponse =
+                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, Map.class, Collections.EMPTY_MAP);
+        message = apiResponse.get("message").toString();
         assertEquals("User created successfuly", message);
 
         User user = userRepository.findOneByEmail("test1@example.com");
@@ -138,7 +162,8 @@ public class UserResourceTest extends BaseIntegrationTest {
 
     @Test
     public void registerUserWithValidationErrors() throws IOException {
-        createUser();
+        User currentUser = createUser();
+        currentUser = addRole(currentUser, "ADMIN");
         Map<String, Object> requestBody = new HashMap<String, Object>();
         requestBody.put("email", "");
         requestBody.put("login", "awesome");

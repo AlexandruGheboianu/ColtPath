@@ -1,7 +1,7 @@
 package com.ghb.coltpath.rest;
 
-import com.ghb.coltpath.dto.FieldMessage;
-import com.ghb.coltpath.dto.RequestOutcomeMessage;
+import com.ghb.coltpath.dto.writer.FieldMessage;
+import com.ghb.coltpath.dto.writer.RequestOutcomeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;

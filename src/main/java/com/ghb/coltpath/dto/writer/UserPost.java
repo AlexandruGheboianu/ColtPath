@@ -1,4 +1,4 @@
-package com.ghb.coltpath.dto;
+package com.ghb.coltpath.dto.writer;
 
 import com.ghb.coltpath.validators.EmailExists;
 import com.ghb.coltpath.validators.UserExists;
@@ -16,7 +16,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @ToString
-public class RegisterUserPost {
+public class UserPost {
     @NotNull(message = "error.field.empty")
     @Size(min = 1, message = "error.field.empty")
     @EmailExists(exists = false, message = "error.user.exists")

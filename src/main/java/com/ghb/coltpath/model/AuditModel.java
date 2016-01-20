@@ -7,6 +7,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.*;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.hateoas.ResourceSupport;
 
 import javax.persistence.*;
 import javax.persistence.Id;

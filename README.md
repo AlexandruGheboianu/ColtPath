@@ -1,2 +1,2 @@
 # ColtPath
-Gamification based elearning platform for programming courses
+Gamification based, elearning REST backend for programming courses 

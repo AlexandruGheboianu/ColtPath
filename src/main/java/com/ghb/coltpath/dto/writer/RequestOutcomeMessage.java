@@ -1,4 +1,4 @@
-package com.ghb.coltpath.dto;
+package com.ghb.coltpath.dto.writer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

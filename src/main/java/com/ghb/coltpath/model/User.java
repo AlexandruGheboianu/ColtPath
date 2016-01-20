@@ -5,9 +5,7 @@ import lombok.*;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Ghebo on 1/6/2016.
@@ -28,14 +26,17 @@ public class User extends AuditModel {
     private boolean isActive;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles = new HashSet<>();
     private Date lastLogin;
     private String confirmationUrl;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Path> paths;
 
     public String serializedRoles() {
         String rolesString = "";
         for (Role role : roles) {
-            rolesString += role + ",";
+            rolesString += role.getName() + ",";
         }
         return rolesString.substring(0, rolesString.length());
     }

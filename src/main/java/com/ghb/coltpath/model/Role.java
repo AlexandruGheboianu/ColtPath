@@ -1,5 +1,6 @@
 package com.ghb.coltpath.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +17,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode(of = "name")
 public class Role {
 
     @Id

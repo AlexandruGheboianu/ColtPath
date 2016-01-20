@@ -12,6 +12,10 @@ public class ModelAuditor implements AuditorAware<String> {
     @Override
     public String getCurrentAuditor() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName(); //get logged in username
+        if (auth != null) {
+            return auth.getName(); //get logged in username
+        } else {
+            return "Anonymous";
+        }
     }
 }

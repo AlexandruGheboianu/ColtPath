@@ -1,4 +1,4 @@
-package com.ghb.coltpath.dto;
+package com.ghb.coltpath.dto.writer;
 
 import com.ghb.coltpath.validators.FieldMatch;
 import lombok.Getter;

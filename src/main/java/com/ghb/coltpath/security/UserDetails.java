@@ -12,14 +12,14 @@ import java.util.List;
 
 public class UserDetails extends User {
     public List<String> getCourses() {
-        return courses;
+        return paths;
     }
 
     public void setCourse(List<String> courses) {
-        this.courses = courses;
+        this.paths = courses;
     }
 
-    private List<String> courses;
+    private List<String> paths;
 
     public UserDetails(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
