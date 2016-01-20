@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ghb.coltpath.Application;
 import com.ghb.coltpath.dto.reader.UserGet;
 import com.ghb.coltpath.dto.writer.RequestOutcomeMessage;
-import com.ghb.coltpath.model.Role;
 import com.ghb.coltpath.model.User;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -44,12 +46,7 @@ public class UserResourceTest extends BaseIntegrationTest {
     public void userCanGetSelf() {
         User user = createUser();
         Date previousLoginDate = user.getLastLogin();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-
-
-        ResponseEntity<UserGet> entity = new TestRestTemplate("awesome", "test").getForEntity
-                ("http://localhost:8888/users/awesome", UserGet.class);
+        ResponseEntity<UserGet> entity = getEntity("/users/awesome", UserGet.class, "awesome", "test");
         assertEquals(HttpStatus.OK, entity.getStatusCode());
         user = userRepository.findOne(user.getId());
         assertNotEquals(previousLoginDate, user.getLastLogin());
@@ -64,12 +61,11 @@ public class UserResourceTest extends BaseIntegrationTest {
         assertTrue(retrieved.isActive());
         assertNotEquals(previousLoginDate, retrieved.getLastLogin());
 
-        Map<String, Object> resp = new TestRestTemplate("awesome", "test").getForObject
-                ("http://localhost:8888/users/awesome", Map.class);
+        Map<String, Object> resp = getAsMapObject("/users/awesome", "awesome", "test");
         assertTrue(resp.containsKey("_links"));
 
-        ResponseEntity<RequestOutcomeMessage> entity2 = new TestRestTemplate("awesome", "test").getForEntity
-                ("http://localhost:8888/users/otheruser", RequestOutcomeMessage.class);
+        ResponseEntity<RequestOutcomeMessage> entity2 = getEntity("/users/otheruser", RequestOutcomeMessage.class, "awesome", "test");
+
         assertEquals(HttpStatus.FORBIDDEN, entity2.getStatusCode());
         assertEquals("Access is denied", entity2.getBody().getMessage());
     }
@@ -150,7 +146,7 @@ public class UserResourceTest extends BaseIntegrationTest {
         assertEquals("awesomes", user.getLogin());
         assertTrue(new BCryptPasswordEncoder().matches("test1234", user.getPassword()));
         assertFalse(user.isActive());
-        assertTrue(user.getRoles().get(0).getName().equals("STUDENT"));
+        assertTrue(user.getRoles().iterator().next().getName().equals("STUDENT"));
         assertNotNull(user.getCreationDate());
         assertNotNull(user.getLastModification());
         assertEquals(user.getCreationDate(), user.getLastModification());

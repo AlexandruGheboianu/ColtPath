@@ -2,10 +2,13 @@ package com.ghb.coltpath.model;
 
 import lombok.*;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
-import java.util.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Ghebo on 1/6/2016.
@@ -17,8 +20,9 @@ import java.util.*;
 @AllArgsConstructor
 @ToString(callSuper = true)
 public class User extends AuditModel {
-
+    @Column(unique = true)
     private String login;
+    @Column(unique = true)
     private String email;
     private String password;
     private String firstName;

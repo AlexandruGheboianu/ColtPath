@@ -1,5 +1,6 @@
 package com.ghb.coltpath.security;
 
+import com.ghb.coltpath.model.Path;
 import com.ghb.coltpath.model.Role;
 import com.ghb.coltpath.model.User;
 import com.ghb.coltpath.repository.UserRepository;
@@ -19,6 +20,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Ghebo on 1/6/2016.
@@ -46,7 +48,7 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
 
         User user = userRepository.findOneByLogin(userName);
-
+        Set<Path> paths = user.getPaths();
         if (user == null) {
             this.logger.warn("Username {}: user not found", userName);
             valid = false;
@@ -67,10 +69,15 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
         user.setLastLogin(new Date());
         userRepository.save(user);
-        final List<Role> roles = user.getRoles();
+
+        final Set<Role> roles = user.getRoles();
         final List<GrantedAuthority> auths = !roles.isEmpty() ? AuthorityUtils.commaSeparatedStringToAuthorityList(user.serializedRoles()) : AuthorityUtils.NO_AUTHORITIES;
         // enabled, account not expired, credentials not expired, account not locked
         com.ghb.coltpath.security.UserDetails userDetails = new com.ghb.coltpath.security.UserDetails(userName, password, true, true, true, true, auths);
+
+        for (Path path : paths) {
+            userDetails.getPaths().add(path.getId());
+        }
         return userDetails;
     }
 }
