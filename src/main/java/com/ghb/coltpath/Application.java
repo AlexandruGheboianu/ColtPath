@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.data.auditing.DateTimeProvider;
+import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 /**
@@ -15,7 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
-@EnableJpaAuditing
+@EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef = "auditorAware")
 public class Application implements CommandLineRunner {
     private static Class<Application> applicationClass = Application.class;
 
@@ -34,5 +36,15 @@ public class Application implements CommandLineRunner {
     @Override
     public void run(String... strings) throws Exception {
 
+    }
+
+    @Bean
+    DateTimeProvider dateTimeProvider() {
+        return new AuditingDateTimeProvider();
+    }
+
+    @Bean
+    AuditorAware<String> auditorAware() {
+        return new ModelAuditor();
     }
 }

@@ -5,11 +5,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.*;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.*;
 import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 /**
@@ -17,6 +17,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 @EqualsAndHashCode(of = "id")
 @ToString
 @MappedSuperclass

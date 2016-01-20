@@ -5,8 +5,6 @@ import com.ghb.coltpath.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.Date;
-
 /**
  * Created by Ghebo on 1/16/2016.
  */
@@ -22,7 +20,6 @@ public abstract class BaseIntegrationTest {
         user.setEmail("test@example.com");
         user.setPassword(new BCryptPasswordEncoder().encode("test"));
         user.setActive(true);
-        user.setLastModification(new Date());
         return userRepository.save(user);
     }
 
