@@ -26,11 +26,12 @@ public class UserResource {
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/users/pwd_change", method = RequestMethod.POST)
+    @RequestMapping(value = "/users/{login}/pwd_change", method = RequestMethod.POST)
     public
     @ResponseBody
-    RequestOutcomeMessage changePassword(@Validated @RequestBody PasswordChangePost passwordChangePost, Principal principal) {
-        userService.changePassword(principal.getName(), passwordChangePost);
+    RequestOutcomeMessage changePassword(@PathVariable String login, @Validated @RequestBody PasswordChangePost
+            passwordChangePost) {
+        userService.changePassword(login, passwordChangePost);
         return new RequestOutcomeMessage("Password changed successfully");
     }
 
@@ -38,20 +39,20 @@ public class UserResource {
     @RequestMapping(value = "/users/{login}", method = RequestMethod.GET)
     public
     @ResponseBody
-    UserGet showUser(@PathVariable String login, Principal principal) {
+    UserGet showUser(@PathVariable String login) {
         User user = userService.getUser(login);
         UserGet response = new UserGet(user.getLogin(), user.getEmail(), user.getFirstName(), user.getLastName(), user.isActive(),
                 user.getLastLogin(), user.getConfirmationUrl());
 
-        response.add(linkTo(methodOn(UserResource.class).showUser(login, principal)).withSelfRel());
-
+        response.add(linkTo(methodOn(UserResource.class).showUser(login)).withSelfRel());
+        response.add(linkTo(methodOn(UserResource.class).changePassword(login, null)).withRel("change_password"));
         return response;
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public
     @ResponseBody
-    RequestOutcomeMessage createUser(@Validated @RequestBody UserPost userPost, Authentication auth) {
+    RequestOutcomeMessage createUser(@Validated @RequestBody UserPost userPost) {
         userService.registerUser(userPost);
         return new RequestOutcomeMessage("User created successfuly");
     }

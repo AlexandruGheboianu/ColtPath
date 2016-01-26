@@ -1,9 +1,5 @@
 package com.ghb.coltpath.validators;
 
-/**
- * Created by Ghebo on 1/16/2016.
- */
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -14,19 +10,14 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Validation annotation to validate that a user is present in the database.
- * <p/>
- * <p/>
- * Example, check if user is not present:
- *
- * @UserExists(email="email", exists = false, message="The user is already present")
- * <p/>
+ * Created by agheboianu on 22.01.2016.
  */
-@Target({ElementType.METHOD, ElementType.FIELD,ElementType.PARAMETER})
+
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RUNTIME)
-@Constraint(validatedBy = UserExistsValidator.class)
+@Constraint(validatedBy = UserIdExistsValidator.class)
 @Documented
-public @interface UserExists {
+public @interface UserIdExists {
     String message();
 
     Class<?>[] groups() default {};

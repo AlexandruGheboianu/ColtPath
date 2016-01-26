@@ -29,6 +29,6 @@ public class UserExistsValidator implements ConstraintValidator<UserExists, Obje
         } catch (final Exception ignore) {
             // ignore
         }
-        return true;
+        return false;
     }
 }

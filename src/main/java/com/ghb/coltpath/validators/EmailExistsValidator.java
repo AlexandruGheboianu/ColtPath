@@ -29,6 +29,6 @@ public class EmailExistsValidator implements ConstraintValidator<EmailExists, Ob
         } catch (final Exception ignore) {
             // ignore
         }
-        return true;
+        return false;
     }
 }

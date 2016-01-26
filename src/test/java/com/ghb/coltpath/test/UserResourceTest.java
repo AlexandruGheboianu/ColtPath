@@ -35,7 +35,6 @@ import static org.junit.Assert.*;
 @WebIntegrationTest
 public class UserResourceTest extends BaseIntegrationTest {
 
-    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Before
     public void init() {
@@ -78,18 +77,8 @@ public class UserResourceTest extends BaseIntegrationTest {
         requestBody.put("oldPassword", "test");
         requestBody.put("newPassword", "12345678");
         requestBody.put("passwordConfirm", "12345678");
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
 
-        //Creating http entity object with request body and headers
-        HttpEntity<String> httpEntity =
-                new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBody), requestHeaders);
-
-        //Invoking the API
-
-        Map<String, Object> apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users/pwd_change", httpEntity, Map.class, Collections.EMPTY_MAP);
-
+        Map<String, Object> apiResponse = postMapObject("/users/awesome/pwd_change", requestBody, "awesome", "test");
         assertNotNull(apiResponse);
 
         //Asserting the response of the API.
@@ -98,9 +87,8 @@ public class UserResourceTest extends BaseIntegrationTest {
         assertEquals("Password changed successfully", message);
 
         User userNewPwd = userRepository.findOneByEmail("test@example.com");
-        System.out.println(user);
         assertTrue(new BCryptPasswordEncoder().matches("12345678", userNewPwd.getPassword()));
-        assertNotEquals(user.getLastModification(), userNewPwd.getLastModification());
+        assertNotEquals(user.getLastModification().getTime(), userNewPwd.getLastModification().getTime());
         userRepository.deleteAll();
     }
 
@@ -114,15 +102,9 @@ public class UserResourceTest extends BaseIntegrationTest {
         requestBody.put("lastName", "Doe");
         requestBody.put("password", "test1234");
         requestBody.put("passwordConfirm", "test1234");
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> httpEntity =
-                new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBody), requestHeaders);
 
         //Invoking the API
-        Map<String, Object> apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, Map.class, Collections.EMPTY_MAP);
-
+        Map<String, Object> apiResponse = postMapObject("/users", requestBody, "awesome", "test");
         assertNotNull(apiResponse);
 
         //Asserting the response of the API.
@@ -132,8 +114,8 @@ public class UserResourceTest extends BaseIntegrationTest {
         assertEquals("Access is denied", message);
 
         addRole(currentUser, "ADMIN");
-        apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, Map.class, Collections.EMPTY_MAP);
+        apiResponse = postMapObject("/users", requestBody, "awesome", "test");
+
         message = apiResponse.get("message").toString();
         assertEquals("User created successfuly", message);
 
@@ -166,19 +148,16 @@ public class UserResourceTest extends BaseIntegrationTest {
         requestBody.put("firstName", "");
         requestBody.put("lastName", "");
         requestBody.put("password", "test");
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> httpEntity =
-                new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBody), requestHeaders);
 
-        //Invoking the API
-        RequestOutcomeMessage apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, RequestOutcomeMessage.class, Collections.EMPTY_MAP);
+        ResponseEntity<RequestOutcomeMessage> apiResponse = postEntity("/users", requestBody, "awesome", "test",
+                RequestOutcomeMessage.class);
+
         assertNotNull(apiResponse);
-        String message = apiResponse.getMessage(); //apiResponse.get("message").toString();
+        assertEquals(HttpStatus.BAD_REQUEST, apiResponse.getStatusCode());
+        String message = apiResponse.getBody().getMessage(); //apiResponse.get("message").toString();
         assertEquals("ERROR", message);
-        assertNotNull(apiResponse.getFields());
-        assertFalse(apiResponse.getFields().isEmpty());
+        assertNotNull(apiResponse.getBody().getFields());
+        assertFalse(apiResponse.getBody().getFields().isEmpty());
 
         requestBody = new HashMap<String, Object>();
         requestBody.put("email", "test1@example.com");
@@ -186,22 +165,20 @@ public class UserResourceTest extends BaseIntegrationTest {
         requestBody.put("firstName", "John");
         requestBody.put("lastName", "Doe");
         requestBody.put("password", "test1234");
-        httpEntity =
-                new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBody), requestHeaders);
-        apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, RequestOutcomeMessage.class, Collections.EMPTY_MAP);
+
+        apiResponse = postEntity("/users", requestBody, "awesome", "test", RequestOutcomeMessage.class);
+
         assertNotNull(apiResponse);
-        message = apiResponse.getMessage();
+        message = apiResponse.getBody().getMessage();
 
         assertEquals("User created successfuly", message);
-        httpEntity =
-                new HttpEntity<String>(OBJECT_MAPPER.writeValueAsString(requestBody), requestHeaders);
-        apiResponse =
-                new TestRestTemplate("awesome", "test").postForObject("http://localhost:8888/users", httpEntity, RequestOutcomeMessage.class, Collections.EMPTY_MAP);
+
+        apiResponse = postEntity("/users", requestBody, "awesome", "test", RequestOutcomeMessage.class);
+
         assertNotNull(apiResponse);
-        message = apiResponse.getMessage(); //apiResponse.get("message").toString();
+        message = apiResponse.getBody().getMessage(); //apiResponse.get("message").toString();
         assertEquals("ERROR", message);
-        assertEquals(2, apiResponse.getFields().size());
+        assertEquals(2, apiResponse.getBody().getFields().size());
 
     }
 

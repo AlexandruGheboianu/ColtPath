@@ -35,6 +35,5 @@ public abstract class AuditModel {
     private Date lastModification;
     @LastModifiedBy
     private String updatedBy;
-    @Version
-    private Long version;
+
 }

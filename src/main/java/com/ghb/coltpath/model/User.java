@@ -35,7 +35,7 @@ public class User extends AuditModel {
     private String confirmationUrl;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Path> paths;
+    private Set<Path> paths = new HashSet<>();
 
     public String serializedRoles() {
         String rolesString = "";
