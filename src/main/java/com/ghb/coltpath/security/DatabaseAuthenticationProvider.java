@@ -1,6 +1,5 @@
 package com.ghb.coltpath.security;
 
-import com.ghb.coltpath.model.Path;
 import com.ghb.coltpath.model.Role;
 import com.ghb.coltpath.model.User;
 import com.ghb.coltpath.repository.UserRepository;
@@ -48,7 +47,7 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
         }
 
         User user = userRepository.findOneByLogin(userName);
-        Set<Path> paths = user.getPaths();
+
         if (user == null) {
             this.logger.warn("Username {}: user not found", userName);
             valid = false;
@@ -75,9 +74,7 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
         // enabled, account not expired, credentials not expired, account not locked
         com.ghb.coltpath.security.UserDetails userDetails = new com.ghb.coltpath.security.UserDetails(userName, password, true, true, true, true, auths);
 
-        for (Path path : paths) {
-            userDetails.getPaths().add(path.getId());
-        }
+
         return userDetails;
     }
 }

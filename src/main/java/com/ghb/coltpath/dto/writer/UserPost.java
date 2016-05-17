@@ -22,11 +22,11 @@ public class UserPost {
     @EmailExists(exists = false, message = "error.user.exists")
     private String email;
     @NotNull(message = "error.field.empty")
-    @Size(min = 6, max = 15, message = "error.field.empty")
+    @Size(min = 4, max = 15, message = "error.field.empty")
     @UserExists(exists = false, message = "error.user.exists")
     private String login;
     @NotNull(message = "error.field.empty")
-    @Size(min = 8, message = "error.field.size")
+    @Size(min = 4, message = "error.field.size")
     private String password;
     @NotNull(message = "error.field.empty")
     private String firstName;

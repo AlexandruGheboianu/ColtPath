@@ -10,6 +10,7 @@ import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -36,10 +37,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/js/**", "/css/**", "/img/**", "/templates/public/**","/favicon.ico");
+    }
+
+    @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().fullyAuthenticated().and().
-                httpBasic().and().
-                csrf().disable();
+        http.formLogin().loginPage("/login").failureUrl("/login?failed=true").defaultSuccessUrl("/home")
+                .and().logout().logoutSuccessUrl("/login")
+                .and().authorizeRequests().antMatchers("/register",
+                "/login")
+                .permitAll()
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .anyRequest().authenticated()
+                .and().csrf().disable();
+
     }
 
     @Autowired

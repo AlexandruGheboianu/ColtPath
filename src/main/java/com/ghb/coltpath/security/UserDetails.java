@@ -13,13 +13,6 @@ import java.util.Set;
  */
 
 public class UserDetails extends User {
-    public Set<Long> getPaths() {
-        return paths;
-    }
-
-    public void setPaths(Set<Long> paths) {
-        this.paths = paths;
-    }
 
     private Set<Long> paths = new HashSet<>();
 

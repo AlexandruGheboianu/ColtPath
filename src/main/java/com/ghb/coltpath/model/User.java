@@ -1,6 +1,8 @@
 package com.ghb.coltpath.model;
 
 import lombok.*;
+import org.springframework.statemachine.annotation.OnTransition;
+import org.springframework.statemachine.annotation.WithStateMachine;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,10 +34,8 @@ public class User extends AuditModel {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
     private Date lastLogin;
-    private String confirmationUrl;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Path> paths = new HashSet<>();
+    @Column(nullable = false)
+    private String state;
 
     public String serializedRoles() {
         String rolesString = "";
