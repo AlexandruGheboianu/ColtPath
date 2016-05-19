@@ -3,9 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ghb</groupId>
     <artifactId>coltpath</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <version>1.0</version>
     <name>ColtPath</name>
+
+    <modules>
+        <module>coltpath-core</module>
+        <module>coltpath-elearning</module>
+        <!--<module>coltpath-admin</module>-->
+    </modules>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -85,14 +92,6 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <finalName>coltpath</finalName>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+
 
 </project>
