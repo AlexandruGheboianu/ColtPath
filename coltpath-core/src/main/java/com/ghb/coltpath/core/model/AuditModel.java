@@ -18,14 +18,11 @@ import java.util.Date;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@EqualsAndHashCode(of = "id")
-@ToString
+@ToString(callSuper = true)
 @MappedSuperclass
-public abstract class AuditModel {
+public abstract class AuditModel extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     @CreatedDate
     private Date creationDate;
     @CreatedBy

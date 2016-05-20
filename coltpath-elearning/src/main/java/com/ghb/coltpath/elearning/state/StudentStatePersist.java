@@ -1,7 +1,6 @@
 package com.ghb.coltpath.elearning.state;
 
-import com.ghb.coltpath.core.model.User;
-import com.ghb.coltpath.elearning.model.Student;
+import com.ghb.coltpath.core.model.Student;
 import com.ghb.coltpath.elearning.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;

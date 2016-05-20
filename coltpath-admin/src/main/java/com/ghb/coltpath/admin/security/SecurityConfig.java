@@ -1,4 +1,4 @@
-package com.ghb.coltpath.elearning.security;
+package com.ghb.coltpath.admin.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -35,12 +35,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().loginPage("/login").failureUrl("/login?failed=true").defaultSuccessUrl("/home")
-                .and().logout().logoutSuccessUrl("/login")
-                .and().authorizeRequests().antMatchers("/register",
-                "/login")
+        http.formLogin().loginPage("/admin/login").failureUrl("/admin/login?failed=true").defaultSuccessUrl("/")
+                .and().logout().logoutSuccessUrl("/admin/login")
+                .and().authorizeRequests().antMatchers("/admin/login")
                 .permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/**").authenticated()
                 .and().csrf().disable();
 
     }

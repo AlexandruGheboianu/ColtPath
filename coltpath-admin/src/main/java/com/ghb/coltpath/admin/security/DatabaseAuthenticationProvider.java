@@ -1,7 +1,8 @@
-package com.ghb.coltpath.elearning.security;
+package com.ghb.coltpath.admin.security;
 
+import com.ghb.coltpath.admin.repository.AdminRepository;
+import com.ghb.coltpath.core.model.Admin;
 import com.ghb.coltpath.core.model.Student;
-import com.ghb.coltpath.elearning.repository.StudentRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    StudentRepository studentRepository;
+    AdminRepository adminRepository;
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken) throws AuthenticationException {
@@ -39,40 +41,38 @@ public class DatabaseAuthenticationProvider extends AbstractUserDetailsAuthentic
         boolean valid = true;
 
         final String password = (String) usernamePasswordAuthenticationToken.getCredentials();
-        if (!StringUtils.hasText(password)) {
-            this.logger.warn("Username {}: no password provided", userName);
-            valid = false;
-        }
-
-        Student student = studentRepository.findOneByLogin(userName);
-
-        if (student == null) {
-            this.logger.warn("Username {}: student not found", userName);
-            valid = false;
-        } else {
-            if (!student.isActive()) {
-                this.logger.warn("Username {}: not active", userName);
-                valid = false;
-            }
-            // Check password
-            if (!new BCryptPasswordEncoder().matches(password, student.getPassword())) {
-                this.logger.warn("Username {}: bad password entered", userName);
-                valid = false;
-            }
-        }
-
-        if (!valid) {
-            throw new BadCredentialsException("Invalid Username/Password for student " + userName);
-        }
-        student.setLastLogin(new Date());
-        studentRepository.save(student);
+//        if (!StringUtils.hasText(password)) {
+//            this.logger.warn("Username {}: no password provided", userName);
+//            valid = false;
+//        }
+//
+//        Admin admin = adminRepository.findOneByLogin(userName);
+//
+//        if (admin == null) {
+//            this.logger.warn("Username {}: admin not found", userName);
+//            valid = false;
+//        } else {
+//            if (!admin.isActive()) {
+//                this.logger.warn("Username {}: not active", userName);
+//                valid = false;
+//            }
+//            // Check password
+//            if (!new BCryptPasswordEncoder().matches(password, admin.getPassword())) {
+//                this.logger.warn("Username {}: bad password entered", userName);
+//                valid = false;
+//            }
+//        }
+//
+//        if (!valid) {
+//            throw new BadCredentialsException("Invalid Username/Password for admin " + userName);
+//        }
+//        admin.setLastLogin(new Date());
+//        adminRepository.save(admin);
 
 
         final List<GrantedAuthority> auths = AuthorityUtils.NO_AUTHORITIES;
         // enabled, account not expired, credentials not expired, account not locked
-        com.ghb.coltpath.elearning.security.UserDetails userDetails = new com.ghb.coltpath.elearning.security.UserDetails(userName, password, true, true, true, true, auths);
 
-
-        return userDetails;
+        return new User(userName, password, true, true, true, true, auths);
     }
 }

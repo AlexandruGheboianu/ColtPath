@@ -13,8 +13,8 @@ import java.util.Date;
 @Setter
 @ToString(callSuper = true)
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
-@DiscriminatorValue("USER")
+@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorValue("BASE")
 public abstract class User extends AuditModel {
     @Column(unique = true)
     private String login;

@@ -26,7 +26,7 @@ import org.springframework.statemachine.recipes.persist.PersistStateMachineHandl
  */
 @SpringBootApplication
 @EnableJpaAuditing(dateTimeProviderRef = "dateTimeProvider", auditorAwareRef = "auditorAware")
-@EntityScan(basePackages = {"com.ghb.coltpath.core.model", "com.ghb.coltpath.elearning.model"})
+@EntityScan(basePackages = {"com.ghb.coltpath.core.model"})
 public class Application implements CommandLineRunner {
     private static Class<Application> applicationClass = Application.class;
 

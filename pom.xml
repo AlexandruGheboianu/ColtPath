@@ -10,7 +10,7 @@
     <modules>
         <module>coltpath-core</module>
         <module>coltpath-elearning</module>
-        <!--<module>coltpath-admin</module>-->
+        <module>coltpath-admin</module>
     </modules>
 
     <parent>
@@ -91,7 +91,6 @@
             <version>1.0.2.RELEASE</version>
         </dependency>
     </dependencies>
-
 
 
 </project>

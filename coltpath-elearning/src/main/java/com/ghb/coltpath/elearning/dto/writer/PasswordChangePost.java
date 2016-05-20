@@ -1,6 +1,6 @@
 package com.ghb.coltpath.elearning.dto.writer;
 
-import com.ghb.coltpath.elearning.validators.FieldMatch;
+import com.ghb.coltpath.core.validators.FieldMatch;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
